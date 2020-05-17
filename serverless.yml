@@ -11,20 +11,12 @@ provider:
   memorySize: 256
   stage: ${opt:stage, 'dev'}
   region: us-east-1
+  environment:
+    AUCTIONS_TABLE_NAME: ${self:custom.Auctionstable.name}
 
 resources:
   Resources:
-    Auctionstable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: Auctionstable
-        BillingMode: PAY_PER_REQUEST
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
+    Auctionstable: ${file(resources/Auctionstable.yml):Auctionstable}
   
 functions:
   createAuction:
@@ -35,5 +27,7 @@ functions:
           path: /auction
 
 custom:
+  Auctionstable: 
+    name: !Ref Auctionstable
   bundle:
     linting: false          
